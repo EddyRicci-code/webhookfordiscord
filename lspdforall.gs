@@ -1,6 +1,6 @@
 // Привет! Постараюсь понятно и для всех расписать каждую переменную, чтобы вы могли без особых знаний переделать все под себя. by Eddy Ricci (bonya7950) discord.
 // Если вдруг чничего не приходит в дискорд, то просто идем в Триггеры -> Ваш тригер и там три точки -> Ошибки выполнения.
-const WEBHOOK_URL = ""; // URL вебхука Discord, определяет, в какой канал будет отправлено сообщение.
+const WEBHOOK_URL = "https://discord.com/api/webhooks/1349680299029565511/m3AbGToOXe4CVtFPgjnvkAU7k5mTy4SxMCecYWoxwK8XkjmPozm8XJTN_bQ-ABsU5GwO"; // URL вебхука Discord, определяет, в какой канал будет отправлено сообщение.
 const MENTIONS = "<@&1344663185810133002> and <@&1344652864244420609>"; // Упоминания ролей или пользователей в Discord.
 const EMBED_COLOR = 32768; // Цвет боковой полосы 
 const TITLE = "Заявка в департамент"; // Заголовок сверху крупным шрифтом.
@@ -18,12 +18,16 @@ function onSubmit(e) {
     const response = e.response.getItemResponses(); 
     const fields = []; 
 
-    // Цикл для обработки каждого ответа из формы
     for (const responseAnswer of response) {
-        const question = responseAnswer.getItem().getTitle(); 
+        let question = responseAnswer.getItem().getTitle(); 
         const answer = responseAnswer.getResponse(); 
+        
+        if (!answer) continue;
 
-        if (!answer) continue; // 
+        // Если заголовок в гугл форме будет больше 256 символов, то чтобы не было ошибки, отбросим остальное.
+        if (question.length > 256) {
+            question = question.substring(0, 253) + "...";
+        }
 
         const parts = answer.match(/[\s\S]{1,1024}/g) || [answer]; 
 
@@ -70,3 +74,4 @@ function onSubmit(e) {
 
     UrlFetchApp.fetch(WEBHOOK_URL, options); 
 }
+
